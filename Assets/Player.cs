@@ -3,6 +3,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private Animator anim;
+
+    public bool isRunning;
 
     [SerializeField] private float moveSpeed;
     private float xInput;
@@ -10,17 +13,26 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
         xInput = Input.GetAxisRaw("Horizontal");
         
+    
         HandleMovement();
+        HandleAnimations();
     }
 
     private void HandleMovement()
     {
         rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocityY);
+    }
+
+    private void HandleAnimations()
+    {
+        isRunning = rb.linearVelocityX != 0;
+        anim.SetBool("isRunning", isRunning);
     }
 }
