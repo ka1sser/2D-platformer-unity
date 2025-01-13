@@ -52,10 +52,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Jump()
-    {
-        rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
-    }
+    private void Jump() => rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
 
 
     private void OnDrawGizmos()
@@ -70,6 +67,8 @@ public class Player : MonoBehaviour
 
     private void HandleAnimations()
     {
-        anim.SetFloat("linearvelocityX", xInput);
+        anim.SetFloat("linearVelocityX", rb.linearVelocityX);
+        anim.SetFloat("linearVelocityY", rb.linearVelocityY);
+        anim.SetBool("isGrounded", isGrounded);
     }
 }
