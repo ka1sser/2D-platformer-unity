@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
     private bool isGrounded;
+    private bool facingRight = true;
+    private int facingDir = 1;
     
     private float xInput;
 
@@ -29,6 +31,7 @@ public class Player : MonoBehaviour
         HandleCollision();
         HandleInput();
         HandleMovement();
+        HandleFlip();
         HandleAnimations();
     }
 
@@ -60,6 +63,20 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
     }
 
+    private void HandleFlip()
+    {
+        if( rb.linearVelocityX < 0 && facingRight || rb.linearVelocityX > 0 && !facingRight)
+        {
+            Flip();
+        }
+    }
+
+    private void Flip()
+    {
+        facingDir = facingDir * -1;
+        transform.Rotate(0, 180, 0);
+        facingRight = !facingRight;
+    }
     private void HandleMovement()
     {
         rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocityY);
