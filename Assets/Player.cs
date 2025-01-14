@@ -10,15 +10,21 @@ public class Player : MonoBehaviour
     [Header("Movement Configuration")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float doubleJumpForce;
+
+    private bool canDoubleJump;
+    private bool isGrounded;
+    private bool isAirborne;
 
     [Header("Collision Info")]
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
-    private bool isGrounded;
-    private bool facingRight = true;
-    private int facingDir = 1;
     
     private float xInput;
+
+    private bool facingRight = true;
+    private int facingDir = 1;
+
 
     private void Awake()
     {
@@ -28,12 +34,16 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        
         HandleCollision();
         HandleInput();
         HandleMovement();
+        UpdateAirborneStatus();
         HandleFlip();
         HandleAnimations();
     }
+
+    
 
     private void HandleCollision()
     {
@@ -49,14 +59,53 @@ public class Player : MonoBehaviour
     {
         xInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Jump();
+            JumpButton();
         }
     }
 
-    private void Jump() => rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
+    private void JumpButton()
+    {
+        if (isGrounded)
+        {
+            Jump();
+        }
+        else if (canDoubleJump)
+        {
+            DoubleJump();
+        }
+    }
 
+    private void UpdateAirborneStatus()
+    {
+        if (isGrounded && isAirborne)
+        {
+            HandleLanding();
+        }
+        if (!isGrounded && !isAirborne)
+        {
+            BecomeAirborne();
+        }
+    }
+
+    private void BecomeAirborne()
+    {
+        isAirborne = true;
+    }
+
+    private void HandleLanding()
+    {
+        isAirborne = false;
+        canDoubleJump = true;
+    }
+
+    private void Jump() => rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
+    private void DoubleJump()
+    {
+        canDoubleJump = false;
+        rb.linearVelocity = new Vector2(rb.linearVelocityX, doubleJumpForce);
+    }
 
     private void OnDrawGizmos()
     {
