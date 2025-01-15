@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask whatIsGround;
     
     private float xInput;
+    private float yInput;
 
     private bool facingRight = true;
     private int facingDir = 1;
@@ -37,22 +38,27 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        
-        HandleCollision();
-        HandleWallSlide();
         HandleInput();
-        HandleMovement();
-        UpdateAirborneStatus();
         HandleFlip();
+        HandleMovement();
+        HandleWallSlide();
+        UpdateAirborneStatus();
+        HandleCollision();
         HandleAnimations();
     }
 
     private void HandleWallSlide()
     {
-        if (isWallDetected && rb.linearVelocityY < 0)
+        bool canWallSlide = isWallDetected && rb.linearVelocityY < 0;
+        float slideModifier = yInput < 0 ? 1: 0.75f;
+
+        if (canWallSlide == false)
         {
-            rb.linearVelocityY = rb.linearVelocityY * 0.75f;
+            return;
         }
+
+        rb.linearVelocityY = rb.linearVelocityY * slideModifier;
+        
     }
 
     private void HandleCollision()
@@ -70,6 +76,7 @@ public class Player : MonoBehaviour
     private void HandleInput()
     {
         xInput = Input.GetAxisRaw("Horizontal");
+        yInput = Input.GetAxisRaw("Vertical");
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -122,7 +129,7 @@ public class Player : MonoBehaviour
 
     private void HandleFlip()
     {
-        if( rb.linearVelocityX < 0 && facingRight || rb.linearVelocityX > 0 && !facingRight)
+        if( xInput < 0 && facingRight || xInput > 0 && !facingRight)
         {
             Flip();
         }
@@ -136,6 +143,11 @@ public class Player : MonoBehaviour
     }
     private void HandleMovement()
     {
+        if (isWallDetected)
+        {
+            return;
+        }
+
         rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocityY);
     }
 
@@ -144,6 +156,7 @@ public class Player : MonoBehaviour
         anim.SetFloat("linearVelocityX", rb.linearVelocityX);
         anim.SetFloat("linearVelocityY", rb.linearVelocityY);
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetBool("isWallDetected", isWallDetected);
     }
 
         private void OnDrawGizmos()
