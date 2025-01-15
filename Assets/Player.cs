@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,9 +16,11 @@ public class Player : MonoBehaviour
     private bool canDoubleJump;
     private bool isGrounded;
     private bool isAirborne;
+    private bool isWallDetected;
 
     [Header("Collision Info")]
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float wallCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
     
     private float xInput;
@@ -36,6 +39,7 @@ public class Player : MonoBehaviour
     {
         
         HandleCollision();
+        HandleWallSlide();
         HandleInput();
         HandleMovement();
         UpdateAirborneStatus();
@@ -43,7 +47,13 @@ public class Player : MonoBehaviour
         HandleAnimations();
     }
 
-    
+    private void HandleWallSlide()
+    {
+        if (isWallDetected && rb.linearVelocityY < 0)
+        {
+            rb.linearVelocityY = rb.linearVelocityY * 0.75f;
+        }
+    }
 
     private void HandleCollision()
     {
@@ -53,6 +63,8 @@ public class Player : MonoBehaviour
         */
 
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
+        isWallDetected = Physics2D.Raycast(transform.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+
     }
 
     private void HandleInput()
@@ -101,15 +113,11 @@ public class Player : MonoBehaviour
     }
 
     private void Jump() => rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
+    
     private void DoubleJump()
     {
         canDoubleJump = false;
         rb.linearVelocity = new Vector2(rb.linearVelocityX, doubleJumpForce);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
     }
 
     private void HandleFlip()
@@ -136,5 +144,11 @@ public class Player : MonoBehaviour
         anim.SetFloat("linearVelocityX", rb.linearVelocityX);
         anim.SetFloat("linearVelocityY", rb.linearVelocityY);
         anim.SetBool("isGrounded", isGrounded);
+    }
+
+        private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x + (wallCheckDistance * facingDir), transform.position.y));
     }
 }
