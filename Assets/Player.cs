@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Vector2 = UnityEngine.Vector2;
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +20,11 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool isAirborne;
     private bool isWallDetected;
+
+    [Header("Wall interactions")]
+    [SerializeField] private float wallJumpDuration = 0.6f;
+    [SerializeField] private Vector2 wallJumpForce;
+    private bool isWallJumping;
 
     [Header("Collision Info")]
     [SerializeField] private float groundCheckDistance;
@@ -90,6 +98,10 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
+        else if (isWallDetected && !isGrounded)
+        {
+            WallJump();
+        }
         else if (canDoubleJump)
         {
             DoubleJump();
@@ -123,8 +135,27 @@ public class Player : MonoBehaviour
     
     private void DoubleJump()
     {
+        isWallJumping = false;
         canDoubleJump = false;
         rb.linearVelocity = new Vector2(rb.linearVelocityX, doubleJumpForce);
+    }
+
+    private void WallJump()
+    {
+        rb.linearVelocity = new Vector2(wallJumpForce.x * -facingDir, wallJumpForce.y);
+        Flip();
+
+        StopCoroutine(WallJumpRoutine());
+        StartCoroutine(WallJumpRoutine());
+    }
+
+    private IEnumerator WallJumpRoutine()
+    {
+        isWallJumping = true;
+        canDoubleJump = true;
+        yield return new WaitForSeconds(wallJumpDuration);
+
+        isWallJumping = false;
     }
 
     private void HandleFlip()
@@ -144,6 +175,11 @@ public class Player : MonoBehaviour
     private void HandleMovement()
     {
         if (isWallDetected)
+        {
+            return;
+        }
+
+        if (isWallJumping)
         {
             return;
         }
