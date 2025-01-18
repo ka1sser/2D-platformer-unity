@@ -17,10 +17,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float doubleJumpForce = 8f;
-
+    
     private bool canDoubleJump;
     private bool isGrounded;
     private bool isAirborne;
+
+    [Header("Buffer Jump")]
+    [SerializeField] private float bufferJumpWindow = 0.25f;
+    private float bufferJumpPressed = -1;
 
     // Wall Interactions
     [Header("Wall Interactions")]
@@ -86,6 +90,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             HandleJumpInput();
+            RequestBufferJump();
         }
     }
 
@@ -158,6 +163,15 @@ public class Player : MonoBehaviour
         isWallJumping = false;
     }
 
+    private void AttemptBufferJump()
+    {
+        if (Time.time < bufferJumpPressed + bufferJumpWindow)
+        {
+            bufferJumpPressed = 0;
+            Jump();
+        }
+    }
+
     // ---------- Airborne Status ----------
     private void UpdateAirborneStatus()
     {
@@ -174,6 +188,16 @@ public class Player : MonoBehaviour
     {
         isAirborne = false;
         canDoubleJump = true;
+
+        AttemptBufferJump();
+    }
+
+    private void RequestBufferJump()
+    {
+        if (isAirborne)
+        {
+            bufferJumpPressed = Time.time;
+        }
     }
 
     // ---------- Wall Slide ----------

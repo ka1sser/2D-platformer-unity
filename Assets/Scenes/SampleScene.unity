@@ -569,6 +569,8 @@ MonoBehaviour:
   moveSpeed: 5.5
   jumpForce: 17
   doubleJumpForce: 12
+  bufferJumpPressed: 0
+  bufferJumpWindow: 0.15
   wallJumpDuration: 0.6
   wallJumpForce: {x: 7, y: 15}
   knockbackDuration: 0.5
