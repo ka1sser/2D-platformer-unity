@@ -154,8 +154,11 @@ public class Player : MonoBehaviour
 
     private void WallJump()
     {
+        canDoubleJump = true;
         rb.linearVelocity = new Vector2(wallJumpForce.x * -facingDir, wallJumpForce.y);
+        
         Flip();
+        StopAllCoroutines();
         StartCoroutine(WallJumpRoutine());
     }
 
@@ -212,6 +215,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    #region Coyote Jump
     private void ActivateCoyoteJump()
     // Jumping at the edge of a platform like in Super Mario reaching for the flag
     {
@@ -219,7 +223,8 @@ public class Player : MonoBehaviour
     }
 
     private void CancelCoyoteJump() => coyoteJumpActivated = Time.time - 1;
-
+    #endregion
+    
     // ---------- Wall Slide ----------
     private void HandleWallSlide()
     {
