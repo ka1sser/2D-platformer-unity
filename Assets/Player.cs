@@ -22,9 +22,11 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool isAirborne;
 
-    [Header("Buffer Jump")]
+    [Header("Buffer & Coyote Jump")]
     [SerializeField] private float bufferJumpWindow = 0.25f;
-    private float bufferJumpPressed = -1;
+    private float bufferJumpActivated = -1;
+    [SerializeField] private float coyoteJumpWindow = 0.5f;
+    private float coyoteJumpActivated = -1;
 
     // Wall Interactions
     [Header("Wall Interactions")]
@@ -89,14 +91,16 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            HandleJumpInput();
+            JumpButton();
             RequestBufferJump();
         }
     }
 
-    private void HandleJumpInput()
+    private void JumpButton()
     {
-        if (isGrounded)
+        bool coyoteJumpAvailable = Time.time < coyoteJumpActivated + coyoteJumpWindow;
+
+        if (isGrounded || coyoteJumpAvailable)
         {
             Jump();
         }
@@ -108,6 +112,8 @@ public class Player : MonoBehaviour
         {
             DoubleJump();
         }
+
+        CancelCoyoteJump();
     }
 
     // ---------- Movement ----------
@@ -165,9 +171,10 @@ public class Player : MonoBehaviour
 
     private void AttemptBufferJump()
     {
-        if (Time.time < bufferJumpPressed + bufferJumpWindow)
+        // When the user spam jump button and the player character is about to land to the ground but not yet
+        if (Time.time < bufferJumpActivated + bufferJumpWindow)
         {
-            bufferJumpPressed = 0;
+            bufferJumpActivated = Time.time - 1;
             Jump();
         }
     }
@@ -182,6 +189,11 @@ public class Player : MonoBehaviour
     private void BecomeAirborne()
     {
         isAirborne = true;
+
+        if (rb.linearVelocityY < 0)
+        {
+            ActivateCoyoteJump();
+        }
     }
 
     private void HandleLanding()
@@ -196,9 +208,17 @@ public class Player : MonoBehaviour
     {
         if (isAirborne)
         {
-            bufferJumpPressed = Time.time;
+            bufferJumpActivated = Time.time;
         }
     }
+
+    private void ActivateCoyoteJump()
+    // Jumping at the edge of a platform like in Super Mario reaching for the flag
+    {
+        coyoteJumpActivated = Time.time;
+    }
+
+    private void CancelCoyoteJump() => coyoteJumpActivated = Time.time - 1;
 
     // ---------- Wall Slide ----------
     private void HandleWallSlide()
