@@ -7709,6 +7709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00f55e10f1a97ea49be9a9b7db382431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 862069019}
 --- !u!4 &484821348
 Transform:
   m_ObjectHideFlags: 0
@@ -7986,7 +7987,7 @@ GameObject:
   - component: {fileID: 862069019}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
