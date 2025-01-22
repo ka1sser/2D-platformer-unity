@@ -8,6 +8,7 @@ public class Fruit : MonoBehaviour
     private Animator anim;
 
     [SerializeField] private FruitType fruitType;
+    [SerializeField] private GameObject pickupVFX;
 
     private void Awake()
     {
@@ -27,7 +28,7 @@ public class Fruit : MonoBehaviour
             UpdateFruitVisuals();
             return;
         }
-        
+
         int randomIndex = Random.Range(0,8);
         anim.SetFloat("fruitIndex", randomIndex);
     }
@@ -45,6 +46,9 @@ public class Fruit : MonoBehaviour
         {
             gameManager.AddFruit();
             Destroy(gameObject);
+
+            GameObject newFx = Instantiate(pickupVFX, transform.position, Quaternion.identity);
+            Destroy(newFx, 0.5f);
         }
     }
 }
