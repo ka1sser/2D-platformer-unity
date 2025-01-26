@@ -48,6 +48,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallCheckDistance = 0.5f;
     [SerializeField] private LayerMask whatIsGround;
 
+    [Header("VFX")]
+    [SerializeField] private GameObject deathVfx;
+
     // Player State
     private float xInput;
     private float yInput;
@@ -243,6 +246,12 @@ public class Player : MonoBehaviour
         StartCoroutine(KnockbackRoutine());
         anim.SetTrigger("knockback");
         rb.linearVelocity = new Vector2(knockbackPower.x * -facingDir, knockbackPower.y);
+    }
+
+    public void Die()
+    {
+        GameObject newdeathVfx = Instantiate(deathVfx, transform.position, UnityEngine.Quaternion.identity);
+        Destroy(gameObject);
     }
 
     private IEnumerator KnockbackRoutine()
