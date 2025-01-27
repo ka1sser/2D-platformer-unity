@@ -8,6 +8,7 @@ public class DeadZone : MonoBehaviour
         if(player != null)
         {
             player.Die();
+            GameManager.instance.RespawnPlayer();
         }
     }
 
