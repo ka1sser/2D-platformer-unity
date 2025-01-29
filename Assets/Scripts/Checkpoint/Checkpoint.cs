@@ -3,7 +3,6 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     private Animator anim => GetComponent<Animator>();
-    private bool active;
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -17,9 +16,7 @@ public class Checkpoint : MonoBehaviour
 
     private void ActivateCheckpoint()
     {
-        active = true;
         anim.SetTrigger("activate");
-
         GameManager.instance.UpdateRespawnPosition(transform);
     }
 }

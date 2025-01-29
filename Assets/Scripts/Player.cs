@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     private bool canBeControlled = false;
 
     [Header("Buffer & Coyote Jump")]
-    [SerializeField] private float bufferJumpWindow = 0.25f;
+    [SerializeField] private float bufferJumpWindow = 0.5f;
     private float bufferJumpActivated = -1;
     [SerializeField] private float coyoteJumpWindow = 0.5f;
     private float coyoteJumpActivated = -1;
@@ -140,10 +140,12 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
+        
         else if (isWallDetected && !isGrounded)
         {
             WallJump();
         }
+
         else if (canDoubleJump)
         {
             DoubleJump();
