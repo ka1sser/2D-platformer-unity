@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void UpdateRespawnPosition(Transform newRespawnPoint) => respawnPoint = newRespawnPoint;
+
     public void AddFruit() => fruitsCollected++;
 
     public bool FruitsHaveRandomLook() => fruitsHaveRandomLook;
