@@ -220,7 +220,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.005083382, y: -0.000099897385}
-  m_Size: {x: 0.9712176, y: 1.3736147}
+  m_Size: {x: 1.035389, y: 1.3736147}
   m_Direction: 0
 --- !u!114 &4847384804402922513
 MonoBehaviour:
@@ -237,7 +237,7 @@ MonoBehaviour:
   moveSpeed: 5.5
   jumpForce: 17
   doubleJumpForce: 12
-  bufferJumpWindow: 0.1
+  bufferJumpWindow: 0.25
   coyoteJumpWindow: 0.3
   wallJumpDuration: 0.6
   wallJumpForce: {x: 2, y: 15}
