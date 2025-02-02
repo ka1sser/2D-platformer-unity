@@ -274,12 +274,19 @@ public class Player : MonoBehaviour
     }
 
     // ---------- Knockback ----------
-    public void KnockBack()
+    public void KnockBack(float sourceDamageXPosition)
     {
+        float knockbackDir = 1;
+
+        if (transform.position.x < sourceDamageXPosition)
+            knockbackDir = -1;
+            //this code handles the knockback direction. If damage source has higher transform.position.x value, then that means the source is
+            //from the right side of the player and knockback should be going to the left side and vice versa
+
         if (!canBeKnocked) return;
 
         StartCoroutine(KnockbackRoutine());
-        rb.linearVelocity = new Vector2(knockbackPower.x * -facingDir, knockbackPower.y);
+        rb.linearVelocity = new Vector2(knockbackPower.x * knockbackDir, knockbackPower.y);
     }
 
     public void Die()
