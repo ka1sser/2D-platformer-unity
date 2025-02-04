@@ -68,20 +68,22 @@ public class Player : MonoBehaviour
         cd = GetComponent<CapsuleCollider2D>();
     }
 
-    private void Start() 
+    private void Start()
     {
         defaultGravityScale = rb.gravityScale;
-        RespawnFinish(false);    
+        RespawnFinish(false);
     }
 
     private void Update()
     {
-        if(canBeControlled == false)
+        if (canBeControlled == false)
         {
+            HandleCollision();
+            HandleAnimations();
             return;
         }
 
-        if (isKnocked) 
+        if (isKnocked)
             return;
 
         HandleInput();
@@ -96,7 +98,7 @@ public class Player : MonoBehaviour
     public void RespawnFinish(bool finished)
     {
 
-        if(finished)
+        if (finished)
         {
             rb.gravityScale = defaultGravityScale;
             canBeControlled = true;
@@ -140,7 +142,7 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
-        
+
         else if (isWallDetected && !isGrounded)
         {
             WallJump();
@@ -194,7 +196,7 @@ public class Player : MonoBehaviour
     {
         canDoubleJump = true;
         rb.linearVelocity = new Vector2(wallJumpForce.x * -facingDir, wallJumpForce.y);
-        
+
         Flip();
         StopAllCoroutines();
         StartCoroutine(WallJumpRoutine());
@@ -262,7 +264,7 @@ public class Player : MonoBehaviour
 
     private void CancelCoyoteJump() => coyoteJumpActivated = Time.time - 1;
     #endregion
-    
+
     // ---------- Wall Slide ----------
     private void HandleWallSlide()
     {
@@ -280,8 +282,8 @@ public class Player : MonoBehaviour
 
         if (transform.position.x < sourceDamageXPosition)
             knockbackDir = -1;
-            //this code handles the knockback direction. If damage source has higher transform.position.x value, then that means the source is
-            //from the right side of the player and knockback should be going to the left side and vice versa
+        //this code handles the knockback direction. If damage source has higher transform.position.x value, then that means the source is
+        //from the right side of the player and knockback should be going to the left side and vice versa
 
         if (!canBeKnocked) return;
 
@@ -305,6 +307,24 @@ public class Player : MonoBehaviour
         canBeKnocked = true;
         isKnocked = false;
         anim.SetBool("isKnocked", false);
+    }
+
+    // ---------- Push (Trampoline) ----------
+    public void Push(Vector2 direction, float duration = 0)
+    {
+        StartCoroutine(PushCoroutine(direction, duration));
+    }
+
+    private IEnumerator PushCoroutine(Vector2 direction, float duration)
+    {
+        canBeControlled = false;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(duration);
+
+        canBeControlled = true;
     }
 
     // ---------- Collision ----------
