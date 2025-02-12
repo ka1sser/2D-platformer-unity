@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance; // Makes this a singleton
-    
+
     [Header("Player")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform respawnPoint;
@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     public bool fruitsAreRandom;
     public int fruitsCollected;
     public int totalFruits;
+
+    [Header("Traps")]
+    public GameObject arrowPrefab;
 
     private void Awake()
     {
@@ -41,13 +44,13 @@ public class GameManager : MonoBehaviour
 
     public void RespawnPlayer() => StartCoroutine(RespawnCoroutine());
 
-    private IEnumerator RespawnCoroutine() 
+    private IEnumerator RespawnCoroutine()
     {
         yield return new WaitForSeconds(respawnDelay);
 
         GameObject newPlayer = Instantiate(playerPrefab, respawnPoint.position, Quaternion.identity);
         player = newPlayer.GetComponent<Player>();
-        
+
     }
 
     public void UpdateRespawnPosition(Transform newRespawnPoint) => respawnPoint = newRespawnPoint;
@@ -55,4 +58,18 @@ public class GameManager : MonoBehaviour
     public void AddFruit() => fruitsCollected++;
 
     public bool FruitsHaveRandomLook() => fruitsAreRandom;
+
+    public void CreateObject(GameObject prefab, Transform target, float delay = 0)
+    {
+        StartCoroutine(CreateObjectCoroutine(prefab, target, delay));
+    }
+
+    private IEnumerator CreateObjectCoroutine(GameObject prefab, Transform target, float delay)
+    {
+        Vector3 newPosition = target.position;
+
+        yield return new WaitForSeconds(delay);
+
+        GameObject newObject = Instantiate(prefab, newPosition, Quaternion.identity);
+    }
 }

@@ -5,7 +5,7 @@ public class Trap_Trampoline : MonoBehaviour
     [SerializeField] private float duration = .5f;
     [SerializeField] private float pushPower;
 
-    private Animator anim;
+    protected Animator anim;
 
     void Awake()
     {
