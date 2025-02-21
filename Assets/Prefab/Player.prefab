@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8622585479437147589}
   - component: {fileID: 5370707002600936566}
   - component: {fileID: 7865952963767011044}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Animator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 6288683929358151789}
   - component: {fileID: 8649195399247180}
   - component: {fileID: 4847384804402922513}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
